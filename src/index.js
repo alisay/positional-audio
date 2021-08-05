@@ -16,11 +16,11 @@ const Controls = () => {
   return <orbitControls ref={ref} target={[0, 0, 0]} enableDamping args={[camera, gl.domElement]} />
 }
 
-function Sound({ url }) {
+function Sound(props) {
   const sound = useRef()
   const { camera } = useThree()
   const [listener] = useState(() => new THREE.AudioListener())
-  const buffer = useLoader(THREE.AudioLoader, url)
+  const buffer = useLoader(THREE.AudioLoader, props.url)
   useEffect(() => {
     sound.current.setBuffer(buffer)
     sound.current.setRefDistance(1)
@@ -30,8 +30,10 @@ function Sound({ url }) {
     return () => camera.remove(listener)
   }, [])
   return (
-    <mesh>
-      <boxBufferGeometry attach="geometry" />
+    <mesh
+    {...props}>
+      {/* <boxBufferGeometry attach="geometry" /> */}
+      <boxBufferGeometry args={[1, 1, 1]} />
       <meshBasicMaterial attach="material" color="hotpink" />
       <positionalAudio ref={sound} args={[listener]} />
     </mesh>
@@ -68,10 +70,9 @@ function App() {
     <Canvas camera={{ position: [0, 0, 10] }}>
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
-      <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} />
       <Suspense fallback={null}>
-        <Sound url="/zapsplat_musical_ice_cream_van_musical_chime_004_43592.mp3" />
+        <Sound position={[-2.2, 0, 0]} url="/zapsplat_musical_ice_cream_van_musical_chime_004_43592.mp3" />
+        <Sound position={[2.2, 0, 0]} url="/b.mp3" />
       </Suspense>
       <Controls />
     </Canvas>
