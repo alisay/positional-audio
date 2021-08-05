@@ -1,68 +1,14 @@
-import * as THREE from 'three'
 import ReactDOM from 'react-dom'
-import React, { Suspense, useRef, useEffect, useState } from 'react'
-import { Canvas, extend, useThree, useFrame, useLoader } from '@react-three/fiber'
+import React, { Suspense } from 'react'
+import { Canvas, extend } from '@react-three/fiber'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import './styles.css'
-// import Box from "./Box.js";
-// import Sound from "./Sound.js";
+
+import Sound from "./Sound.js";
+import Controls from "./Controls.js";
+
 
 extend({ OrbitControls })
-
-const Controls = () => {
-  const { camera, gl } = useThree()
-  const ref = useRef()
-  useFrame(() => ref.current.update())
-  return <orbitControls ref={ref} target={[0, 0, 0]} enableDamping args={[camera, gl.domElement]} />
-}
-
-function Sound(props) {
-  const sound = useRef()
-  const { camera } = useThree()
-  const [listener] = useState(() => new THREE.AudioListener())
-  const buffer = useLoader(THREE.AudioLoader, props.url)
-  useEffect(() => {
-    sound.current.setBuffer(buffer)
-    sound.current.setRefDistance(1)
-    sound.current.setLoop(true)
-    sound.current.play()
-    camera.add(listener)
-    return () => camera.remove(listener)
-  }, [])
-  return (
-    <mesh
-    {...props}>
-      {/* <boxBufferGeometry attach="geometry" /> */}
-      <boxBufferGeometry args={[1, 1, 1]} />
-      <meshBasicMaterial attach="material" color="hotpink" />
-      <positionalAudio ref={sound} args={[listener]} />
-    </mesh>
-  )
-}
-
-function Box(props) {
-  // This reference will give us direct access to the mesh
-  const mesh = useRef()
-  // Set up state for the hovered and active state
-  const [hovered, setHover] = useState(false)
-  const [active, setActive] = useState(false)
-  // Subscribe this component to the render-loop, rotate the mesh every frame
-  useFrame((state, delta) => (mesh.current.rotation.x += 0.01))
-  // Return view, these are regular three.js elements expressed in JSX
-  return (
-    <mesh
-      {...props}
-      ref={mesh}
-      scale={active ? 1.5 : 1}
-      onClick={(event) => setActive(!active)}
-      onPointerOver={(event) => setHover(true)}
-      onPointerOut={(event) => setHover(false)}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-    </mesh>
-  )
-}
 
 
 function App() {
